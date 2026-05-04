@@ -239,7 +239,8 @@
       transition: background 0.12s, color 0.12s;
       outline: none;
       line-height: 1.2;
-      word-break: break-word;
+      white-space: nowrap;
+      overflow: hidden;
     }
     .tile:hover { background: var(--tile-hover); }
     .tile.selected { background: var(--tile-selected); color: var(--tile-selected-text); }
@@ -857,6 +858,7 @@ function renderGame() {
     btn.addEventListener('click', () => onTileClick(i));
     $tileGrid.appendChild(btn);
   }
+  fitTileText();
 }
 
 function makeCategoryBlock(cat, animate = true) {
@@ -876,6 +878,20 @@ function esc(s) {
 }
 
 function getTileBtns() { return Array.from($tileGrid.querySelectorAll('.tile')); }
+
+// Shrink font on tiles whose text overflows the single line
+function fitTileText() {
+  requestAnimationFrame(() => {
+    document.querySelectorAll('.tile').forEach(tile => {
+      tile.style.fontSize = '';
+      if (tile.scrollWidth > tile.clientWidth) {
+        const ratio = (tile.clientWidth - 10) / tile.scrollWidth;
+        const base  = parseFloat(getComputedStyle(tile).fontSize);
+        tile.style.fontSize = Math.max(base * ratio * 0.92, 7) + 'px';
+      }
+    });
+  });
+}
 
 // ═══════════════════════════════════════════════
 //  TILE INTERACTION
