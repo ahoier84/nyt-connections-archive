@@ -46,42 +46,51 @@
     /* ── Header ── */
     header {
       border-bottom: 1px solid var(--header-border);
-      padding: 0 clamp(10px, 3vw, 20px);
+      padding: 0 clamp(8px, 2.5vw, 20px);
       height: var(--header-h);
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 6px;
+      gap: clamp(4px, 1.5vw, 10px);
       flex-shrink: 0;
       background: var(--bg);
       z-index: 10;
     }
 
-    .logo {
-      font-size: clamp(0.85rem, 3vw, 1.2rem);
-      font-weight: 800;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
+    /* Stats and Archive sit directly in the header as flex siblings */
+    .hdr-btn {
+      padding: clamp(5px, 1.2vh, 8px) clamp(8px, 2.5vw, 16px);
+      border-radius: 50px;
+      border: 1.5px solid var(--text);
+      background: none;
+      font-family: inherit;
+      font-size: clamp(0.68rem, 2.2vw, 0.82rem);
+      font-weight: 700;
+      cursor: pointer;
+      transition: background 0.15s, color 0.15s;
+      color: var(--text);
+      white-space: nowrap;
       flex-shrink: 0;
     }
-    /* Hide logo text on very narrow screens to save space */
-    @media (max-width: 360px) { .logo { display: none; } }
+    .hdr-btn:hover { background: var(--text); color: white; }
 
     .header-center {
       display: flex;
       align-items: center;
-      gap: clamp(4px, 1.5vw, 8px);
+      gap: clamp(3px, 1.2vw, 8px);
       flex: 1;
       justify-content: center;
+      min-width: 0;
     }
 
     .nav-btn {
-      width: 32px; height: 32px;
+      width: clamp(28px, 7vw, 34px);
+      height: clamp(28px, 7vw, 34px);
       border-radius: 50%;
       border: 1.5px solid var(--border);
       background: none;
       cursor: pointer;
-      font-size: 0.95rem;
+      font-size: clamp(0.8rem, 2.2vw, 1rem);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -93,13 +102,14 @@
     .nav-btn:disabled { opacity: 0.3; cursor: not-allowed; }
 
     #current-date {
-      font-size: clamp(0.75rem, 2.5vw, 0.88rem);
+      font-size: clamp(0.68rem, 2.4vw, 0.88rem);
       font-weight: 600;
       min-width: 0;
-      width: clamp(110px, 30vw, 150px);
+      flex: 1;
+      max-width: 160px;
       text-align: center;
       cursor: pointer;
-      padding: 5px 6px;
+      padding: 4px 6px;
       border-radius: 6px;
       transition: background 0.15s;
       white-space: nowrap;
@@ -107,28 +117,6 @@
       text-overflow: ellipsis;
     }
     #current-date:hover { background: var(--tile-bg); }
-
-    .header-right {
-      display: flex;
-      gap: clamp(4px, 1.5vw, 8px);
-      align-items: center;
-      flex-shrink: 0;
-    }
-
-    .hdr-btn {
-      padding: clamp(5px, 1vw, 7px) clamp(9px, 2vw, 13px);
-      border-radius: 50px;
-      border: 1.5px solid var(--text);
-      background: none;
-      font-family: inherit;
-      font-size: clamp(0.72rem, 2vw, 0.82rem);
-      font-weight: 700;
-      cursor: pointer;
-      transition: background 0.15s, color 0.15s;
-      color: var(--text);
-      white-space: nowrap;
-    }
-    .hdr-btn:hover { background: var(--text); color: white; }
 
     /* ── Main ── */
     main {
@@ -168,6 +156,14 @@
       flex-direction: column;
       align-items: center;
       width: 100%;
+    }
+
+    .game-title {
+      font-size: clamp(1.1rem, 4vw, 1.5rem);
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: clamp(2px, 0.8vh, 6px);
     }
 
     .subtitle {
@@ -541,6 +537,7 @@
 
       /* Right column: everything else */
       #game-area { flex: 1; max-width: 380px; }
+      .game-title { display: none; }
       .subtitle  { margin-bottom: 6px; font-size: 0.75rem; }
 
       .tile {
@@ -588,16 +585,13 @@
 <body>
 
 <header>
-  <div class="logo">Connections</div>
+  <button class="hdr-btn" id="stats-btn">Stats</button>
   <div class="header-center">
     <button class="nav-btn" id="prev-day" title="Previous day">&#8592;</button>
     <span id="current-date">Loading&hellip;</span>
     <button class="nav-btn" id="next-day" title="Next day">&#8594;</button>
   </div>
-  <div class="header-right">
-    <button class="hdr-btn" id="stats-btn">Stats</button>
-    <button class="hdr-btn" id="archive-btn">Archive</button>
-  </div>
+  <button class="hdr-btn" id="archive-btn">Archive</button>
 </header>
 
 <main>
@@ -609,6 +603,7 @@
 
   <!-- Game -->
   <div id="game-area">
+    <p class="game-title">Connections</p>
     <p class="subtitle">Create four groups of four!</p>
     <div id="categories-area"></div>
     <div id="tile-grid"></div>
