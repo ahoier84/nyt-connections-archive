@@ -21,6 +21,8 @@
       --text-muted: #6b6b6b;
       --bg: #ffffff;
       --header-border: #e6e6e6;
+      --win-color: #a0c35a;
+      --loss-color: #d9534f;
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -37,7 +39,7 @@
     /* ── Header ── */
     header {
       border-bottom: 1px solid var(--header-border);
-      padding: 0 20px;
+      padding: 0 16px;
       height: 56px;
       display: flex;
       align-items: center;
@@ -49,7 +51,7 @@
     }
 
     .logo {
-      font-size: 1.25rem;
+      font-size: 1.2rem;
       font-weight: 800;
       letter-spacing: 0.08em;
       text-transform: uppercase;
@@ -74,36 +76,43 @@
       justify-content: center;
       transition: background 0.15s;
       color: var(--text);
+      flex-shrink: 0;
     }
-
     .nav-btn:hover:not(:disabled) { background: var(--tile-bg); }
     .nav-btn:disabled { opacity: 0.3; cursor: not-allowed; }
 
     #current-date {
-      font-size: 0.9rem;
+      font-size: 0.85rem;
       font-weight: 600;
-      min-width: 150px;
+      min-width: 130px;
       text-align: center;
       cursor: pointer;
-      padding: 6px 10px;
+      padding: 6px 8px;
       border-radius: 6px;
       transition: background 0.15s;
     }
     #current-date:hover { background: var(--tile-bg); }
 
-    .archive-btn {
-      padding: 8px 16px;
+    .header-right {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .hdr-btn {
+      padding: 7px 13px;
       border-radius: 50px;
       border: 1.5px solid var(--text);
       background: none;
       font-family: inherit;
-      font-size: 0.85rem;
-      font-weight: 600;
+      font-size: 0.82rem;
+      font-weight: 700;
       cursor: pointer;
       transition: background 0.15s, color 0.15s;
       color: var(--text);
+      white-space: nowrap;
     }
-    .archive-btn:hover { background: var(--text); color: white; }
+    .hdr-btn:hover { background: var(--text); color: white; }
 
     /* ── Main ── */
     main {
@@ -125,27 +134,22 @@
       gap: 16px;
       padding-top: 80px;
     }
-
     .spinner {
-      width: 40px;
-      height: 40px;
+      width: 40px; height: 40px;
       border: 3px solid var(--border);
       border-top-color: var(--text);
       border-radius: 50%;
       animation: spin 0.8s linear infinite;
     }
-
     #loading p { color: var(--text-muted); font-size: 0.95rem; }
 
-    /* ── Game ── */
+    /* ── Game area ── */
     #game-area {
       display: none;
       flex-direction: column;
       align-items: center;
       width: 100%;
-      gap: 0;
     }
-
     .subtitle {
       font-size: 0.9rem;
       color: var(--text-muted);
@@ -158,16 +162,13 @@
       display: flex;
       flex-direction: column;
       gap: 8px;
-      min-height: 0;
     }
-
     .category-block {
       border-radius: 8px;
       padding: 14px 16px;
       text-align: center;
       animation: slideDown 0.35s ease forwards;
     }
-
     .cat-name {
       font-weight: 800;
       font-size: 0.95rem;
@@ -175,14 +176,9 @@
       letter-spacing: 0.06em;
       margin-bottom: 2px;
     }
+    .cat-members { font-size: 0.82rem; font-weight: 500; opacity: 0.85; }
 
-    .cat-members {
-      font-size: 0.82rem;
-      font-weight: 500;
-      opacity: 0.85;
-    }
-
-    /* ── Tile grid ── */
+    /* ── Tiles ── */
     #tile-grid {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
@@ -190,7 +186,6 @@
       width: 100%;
       margin-top: 8px;
     }
-
     .tile {
       background: var(--tile-bg);
       border: none;
@@ -208,20 +203,13 @@
       letter-spacing: 0.04em;
       cursor: pointer;
       user-select: none;
-      transition: background 0.12s, transform 0.12s, color 0.12s;
+      transition: background 0.12s, color 0.12s;
       outline: none;
       line-height: 1.2;
     }
-
     .tile:hover { background: var(--tile-hover); }
-
-    .tile.selected {
-      background: var(--tile-selected);
-      color: var(--tile-selected-text);
-    }
-
+    .tile.selected { background: var(--tile-selected); color: var(--tile-selected-text); }
     .tile.shake { animation: shake 0.5s ease; }
-
     .tile.pop-0 { animation: pop 0.4s ease 0ms both; }
     .tile.pop-1 { animation: pop 0.4s ease 80ms both; }
     .tile.pop-2 { animation: pop 0.4s ease 160ms both; }
@@ -236,9 +224,7 @@
       font-size: 0.9rem;
       font-weight: 700;
       margin-top: 10px;
-      letter-spacing: 0.02em;
     }
-
     .msg-pill {
       background: var(--text);
       color: white;
@@ -257,32 +243,17 @@
       color: var(--text-muted);
       font-weight: 500;
     }
-
-    .dots {
-      display: flex;
-      gap: 5px;
-    }
-
+    .dots { display: flex; gap: 5px; }
     .dot {
-      width: 11px;
-      height: 11px;
+      width: 11px; height: 11px;
       border-radius: 50%;
       background: var(--text);
       transition: transform 0.25s, background 0.25s;
     }
-
-    .dot.used {
-      background: #c4c4bb;
-      transform: scale(0.75);
-    }
+    .dot.used { background: #c4c4bb; transform: scale(0.75); }
 
     /* ── Controls ── */
-    #controls {
-      display: flex;
-      gap: 10px;
-      margin-top: 16px;
-    }
-
+    #controls { display: flex; gap: 10px; margin-top: 16px; }
     .btn {
       padding: 12px 22px;
       border-radius: 50px;
@@ -294,16 +265,10 @@
       cursor: pointer;
       transition: background 0.15s, color 0.15s, opacity 0.15s;
       color: var(--text);
-      letter-spacing: 0.02em;
     }
-
     .btn:hover:not(:disabled) { background: var(--text); color: white; }
     .btn:disabled { opacity: 0.35; cursor: not-allowed; pointer-events: none; }
-
-    .btn-primary {
-      background: var(--text);
-      color: white;
-    }
+    .btn-primary { background: var(--text); color: white; }
     .btn-primary:hover:not(:disabled) { background: #333; }
 
     /* ── Result screen ── */
@@ -311,50 +276,22 @@
       display: none;
       flex-direction: column;
       align-items: center;
-      gap: 18px;
-      padding: 32px 20px;
+      gap: 16px;
+      padding: 28px 20px;
       text-align: center;
       width: 100%;
     }
-
     #result-screen.show { display: flex; }
+    .result-title { font-size: 1.6rem; font-weight: 800; }
+    .result-sub { font-size: 0.9rem; color: var(--text-muted); }
+    .result-categories { width: 100%; display: flex; flex-direction: column; gap: 8px; }
+    .result-grid { display: flex; flex-direction: column; gap: 4px; }
+    .result-row { display: flex; gap: 4px; }
+    .result-sq { width: 30px; height: 30px; border-radius: 4px; }
+    .result-btns { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; }
 
-    .result-categories {
-      width: 100%;
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
-
-    .result-title {
-      font-size: 1.6rem;
-      font-weight: 800;
-    }
-
-    .result-sub {
-      font-size: 0.9rem;
-      color: var(--text-muted);
-    }
-
-    .result-grid {
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-    }
-
-    .result-row {
-      display: flex;
-      gap: 4px;
-    }
-
-    .result-sq {
-      width: 30px;
-      height: 30px;
-      border-radius: 4px;
-    }
-
-    /* ── Date Modal ── */
-    #date-modal {
+    /* ── Modals (shared) ── */
+    .modal-overlay {
       display: none;
       position: fixed;
       inset: 0;
@@ -363,140 +300,199 @@
       align-items: flex-end;
       justify-content: center;
     }
-
-    @media (min-width: 480px) {
-      #date-modal { align-items: center; }
-    }
-
-    #date-modal.show { display: flex; }
+    @media (min-width: 480px) { .modal-overlay { align-items: center; } }
+    .modal-overlay.show { display: flex; }
 
     .modal-card {
       background: white;
       border-radius: 16px 16px 0 0;
       width: 100%;
       max-width: 480px;
-      max-height: 80vh;
+      max-height: 82vh;
       display: flex;
       flex-direction: column;
       animation: slideUp 0.25s ease;
     }
-
     @media (min-width: 480px) {
-      .modal-card {
-        border-radius: 16px;
-        max-height: 75vh;
-      }
+      .modal-card { border-radius: 16px; max-height: 78vh; }
     }
 
     .modal-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 20px 20px 12px;
+      padding: 18px 20px 12px;
       border-bottom: 1px solid var(--border);
+      flex-shrink: 0;
     }
-
     .modal-title {
-      font-size: 1.1rem;
+      font-size: 1.05rem;
       font-weight: 800;
-      letter-spacing: 0.04em;
+      letter-spacing: 0.05em;
       text-transform: uppercase;
     }
-
     .close-modal {
-      width: 32px;
-      height: 32px;
+      width: 30px; height: 30px;
       border-radius: 50%;
       border: none;
       background: var(--tile-bg);
       cursor: pointer;
-      font-size: 1rem;
+      font-size: 0.95rem;
       display: flex;
       align-items: center;
       justify-content: center;
       transition: background 0.15s;
+      flex-shrink: 0;
     }
     .close-modal:hover { background: var(--border); }
 
-    .date-scroll {
-      overflow-y: auto;
-      flex: 1;
-      padding: 8px 12px 16px;
-    }
-
+    /* ── Archive modal ── */
+    .date-scroll { overflow-y: auto; flex: 1; padding: 6px 12px 16px; }
     .date-group-label {
-      font-size: 0.72rem;
+      font-size: 0.7rem;
       font-weight: 700;
       text-transform: uppercase;
       letter-spacing: 0.1em;
       color: var(--text-muted);
       padding: 10px 8px 4px;
     }
-
     .date-item {
-      padding: 10px 12px;
+      padding: 9px 12px;
       border-radius: 8px;
       cursor: pointer;
-      font-size: 0.9rem;
+      font-size: 0.88rem;
       font-weight: 500;
       display: flex;
       justify-content: space-between;
       align-items: center;
       transition: background 0.12s;
     }
-
     .date-item:hover { background: var(--tile-bg); }
+    .date-item.active { background: var(--text); color: white; }
 
-    .date-item.active {
-      background: var(--text);
-      color: white;
-    }
-
-    .date-badge {
-      font-size: 0.72rem;
+    .status-badge {
+      font-size: 0.7rem;
       font-weight: 700;
-      background: var(--green);
-      color: var(--text);
       padding: 2px 8px;
       border-radius: 50px;
+      flex-shrink: 0;
+    }
+    .badge-won { background: var(--win-color); color: #1a1a1b; }
+    .badge-lost { background: var(--loss-color); color: white; }
+    .date-item.active .status-badge { opacity: 0.85; }
+
+    /* ── Stats modal ── */
+    .stats-body { overflow-y: auto; flex: 1; padding: 16px 20px 20px; }
+
+    .stats-summary {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+      margin-bottom: 24px;
+    }
+    .stat-card {
+      background: var(--tile-bg);
+      border-radius: 10px;
+      padding: 12px 6px;
+      text-align: center;
+    }
+    .stat-value {
+      font-size: 1.7rem;
+      font-weight: 800;
+      line-height: 1;
+    }
+    .stat-label {
+      font-size: 0.68rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-top: 4px;
     }
 
-    .date-item.active .date-badge {
-      background: rgba(255,255,255,0.25);
-      color: white;
+    .stats-section-title {
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--text-muted);
+      margin-bottom: 10px;
+    }
+
+    .history-list { display: flex; flex-direction: column; gap: 6px; }
+
+    .history-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 12px;
+      border-radius: 10px;
+      background: var(--tile-bg);
+      cursor: pointer;
+      transition: background 0.12s;
+    }
+    .history-item:hover { background: var(--tile-hover); }
+
+    .history-result-dot {
+      width: 10px; height: 10px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .dot-won { background: var(--win-color); }
+    .dot-lost { background: var(--loss-color); }
+
+    .history-date {
+      font-size: 0.88rem;
+      font-weight: 600;
+      flex: 1;
+    }
+    .history-mistakes {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+    .history-mini-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+    .history-mini-row { display: flex; gap: 2px; }
+    .history-mini-sq {
+      width: 10px; height: 10px;
+      border-radius: 2px;
+    }
+
+    .stats-empty {
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      padding: 24px 0;
     }
 
     /* ── Animations ── */
-    @keyframes spin {
-      to { transform: rotate(360deg); }
-    }
-
+    @keyframes spin { to { transform: rotate(360deg); } }
     @keyframes shake {
-      0%, 100% { transform: translateX(0); }
+      0%,100% { transform: translateX(0); }
       15% { transform: translateX(-8px); }
       30% { transform: translateX(7px); }
       45% { transform: translateX(-6px); }
       60% { transform: translateX(5px); }
       75% { transform: translateX(-3px); }
     }
-
     @keyframes pop {
       0% { transform: scale(1); }
       40% { transform: scale(1.12); }
       70% { transform: scale(0.95); }
       100% { transform: scale(1); }
     }
-
     @keyframes slideDown {
       from { opacity: 0; transform: translateY(-12px); }
       to { opacity: 1; transform: translateY(0); }
     }
-
     @keyframes slideUp {
       from { transform: translateY(40px); opacity: 0; }
       to { transform: translateY(0); opacity: 1; }
     }
-
     @keyframes fadeUp {
       from { opacity: 0; transform: translateY(6px); }
       to { opacity: 1; transform: translateY(0); }
@@ -506,7 +502,8 @@
     @media (max-width: 400px) {
       .tile { font-size: 0.72rem; }
       .btn { padding: 10px 16px; font-size: 0.82rem; }
-      .logo { font-size: 1.1rem; }
+      .logo { font-size: 1rem; }
+      .hdr-btn { padding: 6px 10px; font-size: 0.78rem; }
     }
   </style>
 </head>
@@ -519,7 +516,10 @@
     <span id="current-date">Loading&hellip;</span>
     <button class="nav-btn" id="next-day" title="Next day">&#8594;</button>
   </div>
-  <button class="archive-btn" id="archive-btn">Archive</button>
+  <div class="header-right">
+    <button class="hdr-btn" id="stats-btn">Stats</button>
+    <button class="hdr-btn" id="archive-btn">Archive</button>
+  </div>
 </header>
 
 <main>
@@ -557,88 +557,140 @@
     <div class="result-sub" id="result-sub"></div>
     <div class="result-categories" id="result-categories"></div>
     <div class="result-grid" id="result-grid"></div>
-    <button class="btn" id="browse-btn">Browse Archive</button>
+    <div class="result-btns">
+      <button class="btn" id="view-stats-btn">View Stats</button>
+      <button class="btn" id="browse-btn">Browse Archive</button>
+    </div>
   </div>
 </main>
 
 <!-- Archive Modal -->
-<div id="date-modal">
+<div class="modal-overlay" id="date-modal">
   <div class="modal-card">
     <div class="modal-header">
       <span class="modal-title">Archive</span>
-      <button class="close-modal" id="close-modal">&#x2715;</button>
+      <button class="close-modal" id="close-archive">&#x2715;</button>
     </div>
     <div class="date-scroll" id="date-scroll"></div>
   </div>
 </div>
 
+<!-- Stats Modal -->
+<div class="modal-overlay" id="stats-modal">
+  <div class="modal-card">
+    <div class="modal-header">
+      <span class="modal-title">Statistics</span>
+      <button class="close-modal" id="close-stats">&#x2715;</button>
+    </div>
+    <div class="stats-body" id="stats-body"></div>
+  </div>
+</div>
+
 <script>
 // ═══════════════════════════════════════════════
-//  DATA
+//  CONSTANTS
 // ═══════════════════════════════════════════════
 
-const DATA_URL = 'https://raw.githubusercontent.com/Eyefyre/NYT-Connections-Answers/main/connections.json';
+const DATA_URL   = 'https://raw.githubusercontent.com/Eyefyre/NYT-Connections-Answers/main/connections.json';
+const STATS_KEY  = 'nyt-connections-stats';
+const MAX_MISTAKES = 4;
 
 const COLORS = [
-  { bg: '#f9df6d', text: '#1a1a1b', name: 'Yellow'  },
-  { bg: '#a0c35a', text: '#1a1a1b', name: 'Green'   },
-  { bg: '#b0c4ef', text: '#1a1a1b', name: 'Blue'    },
-  { bg: '#ba81c5', text: '#1a1a1b', name: 'Purple'  },
+  { bg: '#f9df6d', text: '#1a1a1b', name: 'Yellow' },
+  { bg: '#a0c35a', text: '#1a1a1b', name: 'Green'  },
+  { bg: '#b0c4ef', text: '#1a1a1b', name: 'Blue'   },
+  { bg: '#ba81c5', text: '#1a1a1b', name: 'Purple' },
 ];
 
 // ═══════════════════════════════════════════════
-//  STATE
+//  STATS STORAGE  (localStorage, persists forever)
+// ═══════════════════════════════════════════════
+// Schema: { [date: string]: { result: 'won'|'lost', mistakes: number, guessLog: number[][] } }
+
+function loadStats() {
+  try { return JSON.parse(localStorage.getItem(STATS_KEY) || '{}'); }
+  catch { return {}; }
+}
+
+function saveGameStats(date, won, mistakeCount, log) {
+  const stats = loadStats();
+  stats[date] = { result: won ? 'won' : 'lost', mistakes: mistakeCount, guessLog: log };
+  try { localStorage.setItem(STATS_KEY, JSON.stringify(stats)); } catch {}
+}
+
+function computeOverallStats(dates) {
+  // dates: all puzzle dates newest→oldest
+  const stats = loadStats();
+  let played = 0, won = 0;
+  for (const d of dates) {
+    const s = stats[d];
+    if (s) { played++; if (s.result === 'won') won++; }
+  }
+  const winPct = played ? Math.round(won / played * 100) : 0;
+
+  // Max streak (oldest→newest; gap OR loss resets)
+  let maxStreak = 0, run = 0;
+  for (let i = dates.length - 1; i >= 0; i--) {
+    const s = stats[dates[i]];
+    if (s && s.result === 'won') { run++; maxStreak = Math.max(maxStreak, run); }
+    else { run = 0; }
+  }
+
+  // Current streak: starting from the most-recently-played date going backward
+  let currentStreak = 0;
+  let foundFirst = false;
+  for (let i = 0; i < dates.length; i++) {
+    const s = stats[dates[i]];
+    if (!foundFirst) {
+      if (!s) continue; // skip unplayed dates at the front until first played
+      foundFirst = true;
+    }
+    if (s && s.result === 'won') { currentStreak++; }
+    else { break; } // loss or gap ends streak
+  }
+
+  return { played, won, winPct, currentStreak, maxStreak };
+}
+
+// ═══════════════════════════════════════════════
+//  GAME STATE
 // ═══════════════════════════════════════════════
 
-let allPuzzles = [];       // sorted newest→oldest
-let currentIdx = -1;       // index into allPuzzles
+let allPuzzles   = [];   // sorted newest→oldest
+let currentIdx   = -1;
 let currentPuzzle = null;
 
-// Per-game mutable state
-let grid = [];             // [{word, level, group}] — current display order of remaining tiles
-let selected = new Set();  // indices into grid
-let found = [];            // [{level, group, members}] completed categories
-let mistakes = 0;
-let gameOver = false;
-let guessLog = [];         // [[level,level,level,level], ...] one row per guess
-
-const MAX_MISTAKES = 4;
-
-// Played set persisted in sessionStorage
-const playedSet = (() => {
-  try { return new Set(JSON.parse(sessionStorage.getItem('played') || '[]')); }
-  catch { return new Set(); }
-})();
-
-function markPlayed(date) {
-  playedSet.add(date);
-  try { sessionStorage.setItem('played', JSON.stringify([...playedSet])); } catch {}
-}
+let grid      = [];          // [{word, level, group}] remaining tiles in display order
+let selected  = new Set();   // indices into grid
+let found     = [];          // [{level, group, members}] in order discovered
+let mistakes  = 0;
+let gameOver  = false;
+let guessLog  = [];          // [[level,level,level,level], ...]
 
 // ═══════════════════════════════════════════════
 //  DOM REFS
 // ═══════════════════════════════════════════════
 
-const $loading      = document.getElementById('loading');
-const $gameArea     = document.getElementById('game-area');
+const $loading        = document.getElementById('loading');
+const $gameArea       = document.getElementById('game-area');
 const $categoriesArea = document.getElementById('categories-area');
-const $tileGrid     = document.getElementById('tile-grid');
-const $message      = document.getElementById('message');
-const $resultScreen = document.getElementById('result-screen');
-const $resultTitle  = document.getElementById('result-title');
-const $resultSub    = document.getElementById('result-sub');
-const $resultCats   = document.getElementById('result-categories');
-const $resultGrid   = document.getElementById('result-grid');
-const $currentDate  = document.getElementById('current-date');
-const $prevDay      = document.getElementById('prev-day');
-const $nextDay      = document.getElementById('next-day');
-const $archiveBtn   = document.getElementById('archive-btn');
-const $shuffleBtn   = document.getElementById('shuffle-btn');
-const $deselectBtn  = document.getElementById('deselect-btn');
-const $submitBtn    = document.getElementById('submit-btn');
-const $dateModal    = document.getElementById('date-modal');
-const $dateScroll   = document.getElementById('date-scroll');
-const $browseBtn    = document.getElementById('browse-btn');
+const $tileGrid       = document.getElementById('tile-grid');
+const $message        = document.getElementById('message');
+const $resultScreen   = document.getElementById('result-screen');
+const $resultTitle    = document.getElementById('result-title');
+const $resultSub      = document.getElementById('result-sub');
+const $resultCats     = document.getElementById('result-categories');
+const $resultGrid     = document.getElementById('result-grid');
+const $currentDate    = document.getElementById('current-date');
+const $prevDay        = document.getElementById('prev-day');
+const $nextDay        = document.getElementById('next-day');
+const $shuffleBtn     = document.getElementById('shuffle-btn');
+const $deselectBtn    = document.getElementById('deselect-btn');
+const $submitBtn      = document.getElementById('submit-btn');
+const $dateModal      = document.getElementById('date-modal');
+const $dateScroll     = document.getElementById('date-scroll');
+const $statsModal     = document.getElementById('stats-modal');
+const $statsBody      = document.getElementById('stats-body');
 
 // ═══════════════════════════════════════════════
 //  INIT
@@ -650,7 +702,6 @@ async function init() {
     if (!res.ok) throw new Error('HTTP ' + res.status);
     const raw = await res.json();
 
-    // Filter to last 365 days
     const cutoff = new Date();
     cutoff.setDate(cutoff.getDate() - 365);
     const cutoffStr = cutoff.toISOString().slice(0, 10);
@@ -658,15 +709,11 @@ async function init() {
     allPuzzles = raw
       .filter(p => p.date >= cutoffStr)
       .map(p => {
-        // Normalize level=-1 → positional 0-3
-        const answers = p.answers.map((a, i) => ({
-          ...a,
-          level: a.level < 0 ? i : a.level
-        }));
+        const answers = p.answers.map((a, i) => ({ ...a, level: a.level < 0 ? i : a.level }));
         answers.sort((a, b) => a.level - b.level);
         return { ...p, answers };
       })
-      .sort((a, b) => (a.date < b.date ? 1 : -1)); // newest first
+      .sort((a, b) => (a.date < b.date ? 1 : -1));
 
     $loading.style.display = 'none';
     loadPuzzle(0);
@@ -684,19 +731,17 @@ async function init() {
 
 function loadPuzzle(idx) {
   if (idx < 0 || idx >= allPuzzles.length) return;
-  currentIdx = idx;
+  currentIdx    = idx;
   currentPuzzle = allPuzzles[idx];
 
-  // Build flat tile array
   const allTiles = [];
-  for (const a of currentPuzzle.answers) {
-    for (const w of a.members) {
+  for (const a of currentPuzzle.answers)
+    for (const w of a.members)
       allTiles.push({ word: w, level: a.level, group: a.group });
-    }
-  }
-  grid = shuffle([...allTiles]);
+
+  grid     = shuffle([...allTiles]);
   selected = new Set();
-  found = [];
+  found    = [];
   mistakes = 0;
   gameOver = false;
   guessLog = [];
@@ -704,8 +749,6 @@ function loadPuzzle(idx) {
   updateDateDisplay();
   updateNavButtons();
   renderGame();
-
-  // Show game, hide result
   $gameArea.style.display = 'flex';
   $resultScreen.classList.remove('show');
   clearMessage();
@@ -726,20 +769,14 @@ function shuffle(arr) {
 // ═══════════════════════════════════════════════
 
 function renderGame() {
-  // Found categories
   $categoriesArea.innerHTML = '';
-  for (const cat of found) {
-    $categoriesArea.appendChild(makeCategoryBlock(cat));
-  }
+  for (const cat of found) $categoriesArea.appendChild(makeCategoryBlock(cat));
 
-  // Tile grid
   $tileGrid.innerHTML = '';
   for (let i = 0; i < grid.length; i++) {
-    const t = grid[i];
     const btn = document.createElement('button');
     btn.className = 'tile' + (selected.has(i) ? ' selected' : '');
-    btn.textContent = t.word;
-    btn.dataset.idx = i;
+    btn.textContent = grid[i].word;
     btn.addEventListener('click', () => onTileClick(i));
     $tileGrid.appendChild(btn);
   }
@@ -752,20 +789,16 @@ function makeCategoryBlock(cat, animate = true) {
   if (!animate) div.style.animation = 'none';
   div.style.background = c.bg;
   div.style.color = c.text;
-  div.innerHTML = `
-    <div class="cat-name">${escHtml(cat.group)}</div>
-    <div class="cat-members">${cat.members.map(escHtml).join(', ')}</div>
-  `;
+  div.innerHTML = `<div class="cat-name">${esc(cat.group)}</div>
+    <div class="cat-members">${cat.members.map(esc).join(', ')}</div>`;
   return div;
 }
 
-function escHtml(s) {
+function esc(s) {
   return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
 }
 
-function getTileBtns() {
-  return Array.from($tileGrid.querySelectorAll('.tile'));
-}
+function getTileBtns() { return Array.from($tileGrid.querySelectorAll('.tile')); }
 
 // ═══════════════════════════════════════════════
 //  TILE INTERACTION
@@ -773,19 +806,14 @@ function getTileBtns() {
 
 function onTileClick(idx) {
   if (gameOver) return;
-  if (selected.has(idx)) {
-    selected.delete(idx);
-  } else if (selected.size < 4) {
-    selected.add(idx);
-  }
+  selected.has(idx) ? selected.delete(idx) : selected.size < 4 && selected.add(idx);
   syncSelectionUI();
   updateControlButtons();
   clearMessage();
 }
 
 function syncSelectionUI() {
-  const btns = getTileBtns();
-  btns.forEach((b, i) => b.classList.toggle('selected', selected.has(i)));
+  getTileBtns().forEach((b, i) => b.classList.toggle('selected', selected.has(i)));
 }
 
 function updateControlButtons() {
@@ -806,18 +834,10 @@ function onSubmit() {
   const levels  = tiles.map(t => t.level);
   const groups  = tiles.map(t => t.group);
 
-  // Log guess for result grid
   guessLog.push(levels);
 
-  const allSameGroup = groups.every(g => g === groups[0]);
-
-  if (allSameGroup) {
-    handleCorrect(indices, tiles[0]);
-  } else {
-    handleWrong(indices, levels, groups);
-  }
-
-  markPlayed(currentPuzzle.date);
+  if (groups.every(g => g === groups[0])) handleCorrect(indices, tiles[0]);
+  else handleWrong(indices, groups);
 }
 
 function handleCorrect(indices, firstTile) {
@@ -825,27 +845,20 @@ function handleCorrect(indices, firstTile) {
   const answer = currentPuzzle.answers.find(a => a.group === group);
 
   animatePop(indices, () => {
-    // Remove found tiles from grid
     const foundWords = new Set(indices.map(i => grid[i].word));
     grid = grid.filter(t => !foundWords.has(t.word));
     selected = new Set();
-
     found.push({ level, group, members: answer.members });
     renderGame();
     clearMessage();
     updateControlButtons();
     renderMistakeDots();
-
-    if (found.length === 4) {
-      setTimeout(() => showResult(true), 500);
-    }
+    if (found.length === 4) setTimeout(() => endGame(true), 500);
   });
 }
 
-function handleWrong(indices, levels, groups) {
-  // One-away check: 3 of 4 share the same group
+function handleWrong(indices, groups) {
   const oneAway = groups.some(g => groups.filter(x => x === g).length === 3);
-
   mistakes++;
   renderMistakeDots();
 
@@ -853,11 +866,7 @@ function handleWrong(indices, levels, groups) {
     selected = new Set();
     syncSelectionUI();
     updateControlButtons();
-
-    if (oneAway) {
-      showMessage('One away…');
-    }
-
+    if (oneAway) showMessage('One away…');
     if (mistakes >= MAX_MISTAKES) {
       gameOver = true;
       clearMessage();
@@ -867,7 +876,6 @@ function handleWrong(indices, levels, groups) {
 }
 
 function revealRemaining() {
-  // Reveal unfound categories in level order with stagger
   const unfound = currentPuzzle.answers
     .filter(a => !found.find(f => f.group === a.group))
     .sort((a, b) => a.level - b.level);
@@ -878,12 +886,15 @@ function revealRemaining() {
       found.push({ level: answer.level, group: answer.group, members: answer.members });
       grid = grid.filter(t => t.group !== answer.group);
       renderGame();
-      if (found.length === 4) {
-        setTimeout(() => showResult(false), 500);
-      }
+      if (found.length === 4) setTimeout(() => endGame(false), 500);
     }, delay);
     delay += 450;
   }
+}
+
+function endGame(won) {
+  saveGameStats(currentPuzzle.date, won, mistakes, guessLog);
+  showResult(won);
 }
 
 // ═══════════════════════════════════════════════
@@ -892,28 +903,16 @@ function revealRemaining() {
 
 function animatePop(indices, callback) {
   const btns = getTileBtns();
-  // Sort indices by grid position for stagger
-  const sorted = [...indices].sort((a, b) => a - b);
-  sorted.forEach((gi, rank) => {
-    const btn = btns[gi];
-    if (btn) btn.className = `tile selected pop-${rank}`;
+  [...indices].sort((a,b) => a-b).forEach((gi, rank) => {
+    if (btns[gi]) btns[gi].className = `tile selected pop-${rank}`;
   });
   setTimeout(callback, 400 + 80 * 3 + 50);
 }
 
 function animateShake(indices, callback) {
   const btns = getTileBtns();
-  indices.forEach(i => {
-    const btn = btns[i];
-    if (btn) btn.classList.add('shake');
-  });
-  setTimeout(() => {
-    indices.forEach(i => {
-      const btn = btns[i];
-      if (btn) btn.classList.remove('shake');
-    });
-    callback();
-  }, 520);
+  indices.forEach(i => btns[i]?.classList.add('shake'));
+  setTimeout(() => { indices.forEach(i => btns[i]?.classList.remove('shake')); callback(); }, 520);
 }
 
 // ═══════════════════════════════════════════════
@@ -921,26 +920,20 @@ function animateShake(indices, callback) {
 // ═══════════════════════════════════════════════
 
 function showMessage(msg) {
-  $message.innerHTML = msg ? `<span class="msg-pill">${escHtml(msg)}</span>` : '';
+  $message.innerHTML = msg ? `<span class="msg-pill">${esc(msg)}</span>` : '';
 }
-
-function clearMessage() {
-  $message.innerHTML = '';
-}
+function clearMessage() { $message.innerHTML = ''; }
 
 function renderMistakeDots() {
   const remaining = MAX_MISTAKES - mistakes;
-  for (let i = 0; i < 4; i++) {
+  for (let i = 0; i < 4; i++)
     document.getElementById(`dot-${i}`).classList.toggle('used', i >= remaining);
-  }
 }
 
 function updateDateDisplay() {
   if (!currentPuzzle) return;
   const d = new Date(currentPuzzle.date + 'T12:00:00');
-  $currentDate.textContent = d.toLocaleDateString('en-US', {
-    month: 'short', day: 'numeric', year: 'numeric'
-  });
+  $currentDate.textContent = d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
 }
 
 function updateNavButtons() {
@@ -957,28 +950,25 @@ function showResult(won) {
   $resultScreen.classList.add('show');
 
   $resultTitle.textContent = won ? 'Nice work!' : 'Better luck next time!';
-  $resultSub.textContent = won
+  $resultSub.textContent   = won
     ? `Solved with ${mistakes} mistake${mistakes !== 1 ? 's' : ''}`
     : 'Here\'s how it broke down:';
 
-  // Show all categories in level order
   $resultCats.innerHTML = '';
-  const orderedCats = [...found].sort((a, b) => a.level - b.level);
-  for (const cat of orderedCats) {
-    $resultCats.appendChild(makeCategoryBlock(cat, false));
-  }
+  [...found].sort((a, b) => a.level - b.level).forEach(cat =>
+    $resultCats.appendChild(makeCategoryBlock(cat, false))
+  );
 
-  // Guess grid: each row = one guess, 4 colored squares
   $resultGrid.innerHTML = '';
   for (const row of guessLog) {
     const rowEl = document.createElement('div');
     rowEl.className = 'result-row';
-    for (const lv of row) {
+    row.forEach(lv => {
       const sq = document.createElement('div');
       sq.className = 'result-sq';
       sq.style.background = COLORS[lv]?.bg || '#ccc';
       rowEl.appendChild(sq);
-    }
+    });
     $resultGrid.appendChild(rowEl);
   }
 }
@@ -987,24 +977,20 @@ function showResult(won) {
 //  ARCHIVE MODAL
 // ═══════════════════════════════════════════════
 
-function openModal() {
+function openArchiveModal() {
   buildDateList();
   $dateModal.classList.add('show');
-  // Scroll active item into view
   requestAnimationFrame(() => {
     const active = $dateScroll.querySelector('.active');
     if (active) active.scrollIntoView({ block: 'center', behavior: 'instant' });
   });
 }
 
-function closeModal() {
-  $dateModal.classList.remove('show');
-}
+function closeArchiveModal() { $dateModal.classList.remove('show'); }
 
 function buildDateList() {
   $dateScroll.innerHTML = '';
-
-  // Group by month
+  const stats = loadStats();
   let lastMonth = '';
 
   for (let i = 0; i < allPuzzles.length; i++) {
@@ -1013,54 +999,132 @@ function buildDateList() {
     const monthLabel = d.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
 
     if (monthLabel !== lastMonth) {
-      const label = document.createElement('div');
-      label.className = 'date-group-label';
-      label.textContent = monthLabel;
-      $dateScroll.appendChild(label);
+      const lbl = document.createElement('div');
+      lbl.className = 'date-group-label';
+      lbl.textContent = monthLabel;
+      $dateScroll.appendChild(lbl);
       lastMonth = monthLabel;
     }
 
     const item = document.createElement('div');
     item.className = 'date-item' + (i === currentIdx ? ' active' : '');
+    item.textContent = d.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
 
-    const dateLabel = d.toLocaleDateString('en-US', {
-      weekday: 'short', month: 'short', day: 'numeric'
-    });
-    item.textContent = dateLabel;
-
-    if (playedSet.has(p.date) && i !== currentIdx) {
+    const s = stats[p.date];
+    if (s) {
       const badge = document.createElement('span');
-      badge.className = 'date-badge';
-      badge.textContent = 'Played';
+      badge.className = 'status-badge ' + (s.result === 'won' ? 'badge-won' : 'badge-lost');
+      badge.textContent = s.result === 'won'
+        ? `✓ ${s.mistakes === 0 ? 'Perfect' : s.mistakes + ' mistake' + (s.mistakes !== 1 ? 's' : '')}`
+        : `✗ ${s.mistakes} mistake${s.mistakes !== 1 ? 's' : ''}`;
       item.appendChild(badge);
     }
 
-    item.addEventListener('click', () => {
-      closeModal();
-      loadPuzzle(i);
-    });
-
+    item.addEventListener('click', () => { closeArchiveModal(); loadPuzzle(i); });
     $dateScroll.appendChild(item);
   }
+}
+
+// ═══════════════════════════════════════════════
+//  STATS MODAL
+// ═══════════════════════════════════════════════
+
+function openStatsModal() {
+  buildStatsModal();
+  $statsModal.classList.add('show');
+}
+
+function closeStatsModal() { $statsModal.classList.remove('show'); }
+
+function buildStatsModal() {
+  const dates = allPuzzles.map(p => p.date);
+  const { played, won, winPct, currentStreak, maxStreak } = computeOverallStats(dates);
+  const stats = loadStats();
+
+  // Summary cards
+  const summaryHtml = `
+    <div class="stats-summary">
+      <div class="stat-card"><div class="stat-value">${played}</div><div class="stat-label">Played</div></div>
+      <div class="stat-card"><div class="stat-value">${winPct}%</div><div class="stat-label">Win %</div></div>
+      <div class="stat-card"><div class="stat-value">${currentStreak}</div><div class="stat-label">Streak</div></div>
+      <div class="stat-card"><div class="stat-value">${maxStreak}</div><div class="stat-label">Best</div></div>
+    </div>
+    <div class="stats-section-title">Game History</div>
+  `;
+
+  // History list — only played puzzles, newest first
+  const played_puzzles = allPuzzles.filter(p => stats[p.date]);
+
+  let historyHtml = '';
+  if (played_puzzles.length === 0) {
+    historyHtml = '<div class="stats-empty">No games played yet.<br>Start playing to see your history!</div>';
+  } else {
+    historyHtml = '<div class="history-list">';
+    for (const p of played_puzzles) {
+      const s = stats[p.date];
+      const d = new Date(p.date + 'T12:00:00');
+      const dateStr = d.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' });
+      const mistakeStr = s.mistakes === 0 ? 'Perfect!' : `${s.mistakes} mistake${s.mistakes !== 1 ? 's' : ''}`;
+
+      // Mini guess grid
+      let miniGrid = '';
+      if (s.guessLog && s.guessLog.length) {
+        miniGrid = '<div class="history-mini-grid">';
+        for (const row of s.guessLog) {
+          miniGrid += '<div class="history-mini-row">';
+          for (const lv of row) {
+            miniGrid += `<div class="history-mini-sq" style="background:${COLORS[lv]?.bg || '#ccc'}"></div>`;
+          }
+          miniGrid += '</div>';
+        }
+        miniGrid += '</div>';
+      }
+
+      const dotClass = s.result === 'won' ? 'dot-won' : 'dot-lost';
+      historyHtml += `
+        <div class="history-item" data-date="${esc(p.date)}">
+          <div class="history-result-dot ${dotClass}"></div>
+          <div class="history-date">${esc(dateStr)}</div>
+          <div class="history-mistakes">${esc(mistakeStr)}</div>
+          ${miniGrid}
+        </div>`;
+    }
+    historyHtml += '</div>';
+  }
+
+  $statsBody.innerHTML = summaryHtml + historyHtml;
+
+  // Click a history item → navigate to that puzzle
+  $statsBody.querySelectorAll('.history-item').forEach(el => {
+    el.addEventListener('click', () => {
+      const date = el.dataset.date;
+      const idx = allPuzzles.findIndex(p => p.date === date);
+      if (idx !== -1) { closeStatsModal(); loadPuzzle(idx); }
+    });
+  });
 }
 
 // ═══════════════════════════════════════════════
 //  EVENT LISTENERS
 // ═══════════════════════════════════════════════
 
-$prevDay.addEventListener('click', () => {
-  if (currentIdx < allPuzzles.length - 1) loadPuzzle(currentIdx + 1);
-});
+$prevDay.addEventListener('click', () => { if (currentIdx < allPuzzles.length - 1) loadPuzzle(currentIdx + 1); });
+$nextDay.addEventListener('click', () => { if (currentIdx > 0) loadPuzzle(currentIdx - 1); });
 
-$nextDay.addEventListener('click', () => {
-  if (currentIdx > 0) loadPuzzle(currentIdx - 1);
-});
+document.getElementById('archive-btn').addEventListener('click', openArchiveModal);
+$currentDate.addEventListener('click', openArchiveModal);
+document.getElementById('close-archive').addEventListener('click', closeArchiveModal);
+$dateModal.addEventListener('click', e => { if (e.target === $dateModal) closeArchiveModal(); });
 
-$archiveBtn.addEventListener('click', openModal);
-$currentDate.addEventListener('click', openModal);
-$browseBtn.addEventListener('click', openModal);
-document.getElementById('close-modal').addEventListener('click', closeModal);
-$dateModal.addEventListener('click', e => { if (e.target === $dateModal) closeModal(); });
+document.getElementById('stats-btn').addEventListener('click', openStatsModal);
+document.getElementById('close-stats').addEventListener('click', closeStatsModal);
+$statsModal.addEventListener('click', e => { if (e.target === $statsModal) closeStatsModal(); });
+
+document.getElementById('view-stats-btn').addEventListener('click', () => {
+  $resultScreen.classList.remove('show');
+  openStatsModal();
+});
+document.getElementById('browse-btn').addEventListener('click', openArchiveModal);
 
 $shuffleBtn.addEventListener('click', () => {
   grid = shuffle([...grid]);
@@ -1078,17 +1142,12 @@ $deselectBtn.addEventListener('click', () => {
 
 $submitBtn.addEventListener('click', onSubmit);
 
-// Keyboard shortcuts
 document.addEventListener('keydown', e => {
   if (e.key === 'Enter' && !$submitBtn.disabled) onSubmit();
   if (e.key === 'Escape') {
-    if ($dateModal.classList.contains('show')) closeModal();
-    else if (selected.size > 0) {
-      selected = new Set();
-      syncSelectionUI();
-      updateControlButtons();
-      clearMessage();
-    }
+    if ($statsModal.classList.contains('show')) closeStatsModal();
+    else if ($dateModal.classList.contains('show')) closeArchiveModal();
+    else if (selected.size > 0) { selected = new Set(); syncSelectionUI(); updateControlButtons(); clearMessage(); }
   }
 });
 
