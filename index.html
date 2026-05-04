@@ -1,0 +1,1101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Connections Archive</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Libre+Franklin:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --yellow: #f9df6d;
+      --green: #a0c35a;
+      --blue: #b0c4ef;
+      --purple: #ba81c5;
+      --tile-bg: #efefe6;
+      --tile-hover: #ddddd4;
+      --tile-selected: #5a594e;
+      --tile-selected-text: #ffffff;
+      --border: #d3d6da;
+      --text: #1a1a1b;
+      --text-muted: #6b6b6b;
+      --bg: #ffffff;
+      --header-border: #e6e6e6;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Libre Franklin', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ── Header ── */
+    header {
+      border-bottom: 1px solid var(--header-border);
+      padding: 0 20px;
+      height: 56px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      background: var(--bg);
+      z-index: 10;
+    }
+
+    .logo {
+      font-size: 1.25rem;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .header-center {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .nav-btn {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      border: 1.5px solid var(--border);
+      background: none;
+      cursor: pointer;
+      font-size: 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.15s;
+      color: var(--text);
+    }
+
+    .nav-btn:hover:not(:disabled) { background: var(--tile-bg); }
+    .nav-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+
+    #current-date {
+      font-size: 0.9rem;
+      font-weight: 600;
+      min-width: 150px;
+      text-align: center;
+      cursor: pointer;
+      padding: 6px 10px;
+      border-radius: 6px;
+      transition: background 0.15s;
+    }
+    #current-date:hover { background: var(--tile-bg); }
+
+    .archive-btn {
+      padding: 8px 16px;
+      border-radius: 50px;
+      border: 1.5px solid var(--text);
+      background: none;
+      font-family: inherit;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.15s, color 0.15s;
+      color: var(--text);
+    }
+    .archive-btn:hover { background: var(--text); color: white; }
+
+    /* ── Main ── */
+    main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 20px 16px 32px;
+      max-width: 620px;
+      margin: 0 auto;
+      width: 100%;
+    }
+
+    /* ── Loading ── */
+    #loading {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 16px;
+      padding-top: 80px;
+    }
+
+    .spinner {
+      width: 40px;
+      height: 40px;
+      border: 3px solid var(--border);
+      border-top-color: var(--text);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+
+    #loading p { color: var(--text-muted); font-size: 0.95rem; }
+
+    /* ── Game ── */
+    #game-area {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      width: 100%;
+      gap: 0;
+    }
+
+    .subtitle {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      margin-bottom: 16px;
+    }
+
+    /* ── Categories ── */
+    #categories-area {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      min-height: 0;
+    }
+
+    .category-block {
+      border-radius: 8px;
+      padding: 14px 16px;
+      text-align: center;
+      animation: slideDown 0.35s ease forwards;
+    }
+
+    .cat-name {
+      font-weight: 800;
+      font-size: 0.95rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-bottom: 2px;
+    }
+
+    .cat-members {
+      font-size: 0.82rem;
+      font-weight: 500;
+      opacity: 0.85;
+    }
+
+    /* ── Tile grid ── */
+    #tile-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+      width: 100%;
+      margin-top: 8px;
+    }
+
+    .tile {
+      background: var(--tile-bg);
+      border: none;
+      border-radius: 8px;
+      aspect-ratio: 1.15;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 4px 6px;
+      font-family: inherit;
+      font-size: 0.82rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      cursor: pointer;
+      user-select: none;
+      transition: background 0.12s, transform 0.12s, color 0.12s;
+      outline: none;
+      line-height: 1.2;
+    }
+
+    .tile:hover { background: var(--tile-hover); }
+
+    .tile.selected {
+      background: var(--tile-selected);
+      color: var(--tile-selected-text);
+    }
+
+    .tile.shake { animation: shake 0.5s ease; }
+
+    .tile.pop-0 { animation: pop 0.4s ease 0ms both; }
+    .tile.pop-1 { animation: pop 0.4s ease 80ms both; }
+    .tile.pop-2 { animation: pop 0.4s ease 160ms both; }
+    .tile.pop-3 { animation: pop 0.4s ease 240ms both; }
+
+    /* ── Message ── */
+    #message {
+      height: 28px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.9rem;
+      font-weight: 700;
+      margin-top: 10px;
+      letter-spacing: 0.02em;
+    }
+
+    .msg-pill {
+      background: var(--text);
+      color: white;
+      padding: 4px 14px;
+      border-radius: 50px;
+      animation: fadeUp 0.2s ease;
+    }
+
+    /* ── Mistakes ── */
+    #mistakes-area {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 8px;
+      font-size: 0.88rem;
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+
+    .dots {
+      display: flex;
+      gap: 5px;
+    }
+
+    .dot {
+      width: 11px;
+      height: 11px;
+      border-radius: 50%;
+      background: var(--text);
+      transition: transform 0.25s, background 0.25s;
+    }
+
+    .dot.used {
+      background: #c4c4bb;
+      transform: scale(0.75);
+    }
+
+    /* ── Controls ── */
+    #controls {
+      display: flex;
+      gap: 10px;
+      margin-top: 16px;
+    }
+
+    .btn {
+      padding: 12px 22px;
+      border-radius: 50px;
+      border: 1.5px solid var(--text);
+      background: none;
+      font-family: inherit;
+      font-size: 0.88rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background 0.15s, color 0.15s, opacity 0.15s;
+      color: var(--text);
+      letter-spacing: 0.02em;
+    }
+
+    .btn:hover:not(:disabled) { background: var(--text); color: white; }
+    .btn:disabled { opacity: 0.35; cursor: not-allowed; pointer-events: none; }
+
+    .btn-primary {
+      background: var(--text);
+      color: white;
+    }
+    .btn-primary:hover:not(:disabled) { background: #333; }
+
+    /* ── Result screen ── */
+    #result-screen {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      gap: 18px;
+      padding: 32px 20px;
+      text-align: center;
+      width: 100%;
+    }
+
+    #result-screen.show { display: flex; }
+
+    .result-categories {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .result-title {
+      font-size: 1.6rem;
+      font-weight: 800;
+    }
+
+    .result-sub {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+    }
+
+    .result-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .result-row {
+      display: flex;
+      gap: 4px;
+    }
+
+    .result-sq {
+      width: 30px;
+      height: 30px;
+      border-radius: 4px;
+    }
+
+    /* ── Date Modal ── */
+    #date-modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.45);
+      z-index: 100;
+      align-items: flex-end;
+      justify-content: center;
+    }
+
+    @media (min-width: 480px) {
+      #date-modal { align-items: center; }
+    }
+
+    #date-modal.show { display: flex; }
+
+    .modal-card {
+      background: white;
+      border-radius: 16px 16px 0 0;
+      width: 100%;
+      max-width: 480px;
+      max-height: 80vh;
+      display: flex;
+      flex-direction: column;
+      animation: slideUp 0.25s ease;
+    }
+
+    @media (min-width: 480px) {
+      .modal-card {
+        border-radius: 16px;
+        max-height: 75vh;
+      }
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px 20px 12px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .modal-title {
+      font-size: 1.1rem;
+      font-weight: 800;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    .close-modal {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      border: none;
+      background: var(--tile-bg);
+      cursor: pointer;
+      font-size: 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.15s;
+    }
+    .close-modal:hover { background: var(--border); }
+
+    .date-scroll {
+      overflow-y: auto;
+      flex: 1;
+      padding: 8px 12px 16px;
+    }
+
+    .date-group-label {
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--text-muted);
+      padding: 10px 8px 4px;
+    }
+
+    .date-item {
+      padding: 10px 12px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      font-weight: 500;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: background 0.12s;
+    }
+
+    .date-item:hover { background: var(--tile-bg); }
+
+    .date-item.active {
+      background: var(--text);
+      color: white;
+    }
+
+    .date-badge {
+      font-size: 0.72rem;
+      font-weight: 700;
+      background: var(--green);
+      color: var(--text);
+      padding: 2px 8px;
+      border-radius: 50px;
+    }
+
+    .date-item.active .date-badge {
+      background: rgba(255,255,255,0.25);
+      color: white;
+    }
+
+    /* ── Animations ── */
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      15% { transform: translateX(-8px); }
+      30% { transform: translateX(7px); }
+      45% { transform: translateX(-6px); }
+      60% { transform: translateX(5px); }
+      75% { transform: translateX(-3px); }
+    }
+
+    @keyframes pop {
+      0% { transform: scale(1); }
+      40% { transform: scale(1.12); }
+      70% { transform: scale(0.95); }
+      100% { transform: scale(1); }
+    }
+
+    @keyframes slideDown {
+      from { opacity: 0; transform: translateY(-12px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes slideUp {
+      from { transform: translateY(40px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 400px) {
+      .tile { font-size: 0.72rem; }
+      .btn { padding: 10px 16px; font-size: 0.82rem; }
+      .logo { font-size: 1.1rem; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="logo">Connections</div>
+  <div class="header-center">
+    <button class="nav-btn" id="prev-day" title="Previous day">&#8592;</button>
+    <span id="current-date">Loading&hellip;</span>
+    <button class="nav-btn" id="next-day" title="Next day">&#8594;</button>
+  </div>
+  <button class="archive-btn" id="archive-btn">Archive</button>
+</header>
+
+<main>
+  <!-- Loading -->
+  <div id="loading">
+    <div class="spinner"></div>
+    <p>Loading 365 days of puzzles&hellip;</p>
+  </div>
+
+  <!-- Game -->
+  <div id="game-area">
+    <p class="subtitle">Create four groups of four!</p>
+    <div id="categories-area"></div>
+    <div id="tile-grid"></div>
+    <div id="message"></div>
+    <div id="mistakes-area">
+      <span>Mistakes remaining:</span>
+      <div class="dots">
+        <div class="dot" id="dot-0"></div>
+        <div class="dot" id="dot-1"></div>
+        <div class="dot" id="dot-2"></div>
+        <div class="dot" id="dot-3"></div>
+      </div>
+    </div>
+    <div id="controls">
+      <button class="btn" id="shuffle-btn">Shuffle</button>
+      <button class="btn" id="deselect-btn" disabled>Deselect All</button>
+      <button class="btn btn-primary" id="submit-btn" disabled>Submit</button>
+    </div>
+  </div>
+
+  <!-- Result -->
+  <div id="result-screen">
+    <div class="result-title" id="result-title"></div>
+    <div class="result-sub" id="result-sub"></div>
+    <div class="result-categories" id="result-categories"></div>
+    <div class="result-grid" id="result-grid"></div>
+    <button class="btn" id="browse-btn">Browse Archive</button>
+  </div>
+</main>
+
+<!-- Archive Modal -->
+<div id="date-modal">
+  <div class="modal-card">
+    <div class="modal-header">
+      <span class="modal-title">Archive</span>
+      <button class="close-modal" id="close-modal">&#x2715;</button>
+    </div>
+    <div class="date-scroll" id="date-scroll"></div>
+  </div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════
+//  DATA
+// ═══════════════════════════════════════════════
+
+const DATA_URL = 'https://raw.githubusercontent.com/Eyefyre/NYT-Connections-Answers/main/connections.json';
+
+const COLORS = [
+  { bg: '#f9df6d', text: '#1a1a1b', name: 'Yellow'  },
+  { bg: '#a0c35a', text: '#1a1a1b', name: 'Green'   },
+  { bg: '#b0c4ef', text: '#1a1a1b', name: 'Blue'    },
+  { bg: '#ba81c5', text: '#1a1a1b', name: 'Purple'  },
+];
+
+// ═══════════════════════════════════════════════
+//  STATE
+// ═══════════════════════════════════════════════
+
+let allPuzzles = [];       // sorted newest→oldest
+let currentIdx = -1;       // index into allPuzzles
+let currentPuzzle = null;
+
+// Per-game mutable state
+let grid = [];             // [{word, level, group}] — current display order of remaining tiles
+let selected = new Set();  // indices into grid
+let found = [];            // [{level, group, members}] completed categories
+let mistakes = 0;
+let gameOver = false;
+let guessLog = [];         // [[level,level,level,level], ...] one row per guess
+
+const MAX_MISTAKES = 4;
+
+// Played set persisted in sessionStorage
+const playedSet = (() => {
+  try { return new Set(JSON.parse(sessionStorage.getItem('played') || '[]')); }
+  catch { return new Set(); }
+})();
+
+function markPlayed(date) {
+  playedSet.add(date);
+  try { sessionStorage.setItem('played', JSON.stringify([...playedSet])); } catch {}
+}
+
+// ═══════════════════════════════════════════════
+//  DOM REFS
+// ═══════════════════════════════════════════════
+
+const $loading      = document.getElementById('loading');
+const $gameArea     = document.getElementById('game-area');
+const $categoriesArea = document.getElementById('categories-area');
+const $tileGrid     = document.getElementById('tile-grid');
+const $message      = document.getElementById('message');
+const $resultScreen = document.getElementById('result-screen');
+const $resultTitle  = document.getElementById('result-title');
+const $resultSub    = document.getElementById('result-sub');
+const $resultCats   = document.getElementById('result-categories');
+const $resultGrid   = document.getElementById('result-grid');
+const $currentDate  = document.getElementById('current-date');
+const $prevDay      = document.getElementById('prev-day');
+const $nextDay      = document.getElementById('next-day');
+const $archiveBtn   = document.getElementById('archive-btn');
+const $shuffleBtn   = document.getElementById('shuffle-btn');
+const $deselectBtn  = document.getElementById('deselect-btn');
+const $submitBtn    = document.getElementById('submit-btn');
+const $dateModal    = document.getElementById('date-modal');
+const $dateScroll   = document.getElementById('date-scroll');
+const $browseBtn    = document.getElementById('browse-btn');
+
+// ═══════════════════════════════════════════════
+//  INIT
+// ═══════════════════════════════════════════════
+
+async function init() {
+  try {
+    const res = await fetch(DATA_URL);
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    const raw = await res.json();
+
+    // Filter to last 365 days
+    const cutoff = new Date();
+    cutoff.setDate(cutoff.getDate() - 365);
+    const cutoffStr = cutoff.toISOString().slice(0, 10);
+
+    allPuzzles = raw
+      .filter(p => p.date >= cutoffStr)
+      .map(p => {
+        // Normalize level=-1 → positional 0-3
+        const answers = p.answers.map((a, i) => ({
+          ...a,
+          level: a.level < 0 ? i : a.level
+        }));
+        answers.sort((a, b) => a.level - b.level);
+        return { ...p, answers };
+      })
+      .sort((a, b) => (a.date < b.date ? 1 : -1)); // newest first
+
+    $loading.style.display = 'none';
+    loadPuzzle(0);
+  } catch (err) {
+    $loading.innerHTML = `<p style="color:#c00;font-weight:600">
+      Failed to load puzzles.<br><small>${err.message}</small><br><br>
+      <button class="btn" onclick="location.reload()">Retry</button></p>`;
+    console.error(err);
+  }
+}
+
+// ═══════════════════════════════════════════════
+//  PUZZLE LOADING
+// ═══════════════════════════════════════════════
+
+function loadPuzzle(idx) {
+  if (idx < 0 || idx >= allPuzzles.length) return;
+  currentIdx = idx;
+  currentPuzzle = allPuzzles[idx];
+
+  // Build flat tile array
+  const allTiles = [];
+  for (const a of currentPuzzle.answers) {
+    for (const w of a.members) {
+      allTiles.push({ word: w, level: a.level, group: a.group });
+    }
+  }
+  grid = shuffle([...allTiles]);
+  selected = new Set();
+  found = [];
+  mistakes = 0;
+  gameOver = false;
+  guessLog = [];
+
+  updateDateDisplay();
+  updateNavButtons();
+  renderGame();
+
+  // Show game, hide result
+  $gameArea.style.display = 'flex';
+  $resultScreen.classList.remove('show');
+  clearMessage();
+  renderMistakeDots();
+  updateControlButtons();
+}
+
+function shuffle(arr) {
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr;
+}
+
+// ═══════════════════════════════════════════════
+//  RENDERING
+// ═══════════════════════════════════════════════
+
+function renderGame() {
+  // Found categories
+  $categoriesArea.innerHTML = '';
+  for (const cat of found) {
+    $categoriesArea.appendChild(makeCategoryBlock(cat));
+  }
+
+  // Tile grid
+  $tileGrid.innerHTML = '';
+  for (let i = 0; i < grid.length; i++) {
+    const t = grid[i];
+    const btn = document.createElement('button');
+    btn.className = 'tile' + (selected.has(i) ? ' selected' : '');
+    btn.textContent = t.word;
+    btn.dataset.idx = i;
+    btn.addEventListener('click', () => onTileClick(i));
+    $tileGrid.appendChild(btn);
+  }
+}
+
+function makeCategoryBlock(cat, animate = true) {
+  const c = COLORS[cat.level];
+  const div = document.createElement('div');
+  div.className = 'category-block';
+  if (!animate) div.style.animation = 'none';
+  div.style.background = c.bg;
+  div.style.color = c.text;
+  div.innerHTML = `
+    <div class="cat-name">${escHtml(cat.group)}</div>
+    <div class="cat-members">${cat.members.map(escHtml).join(', ')}</div>
+  `;
+  return div;
+}
+
+function escHtml(s) {
+  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+function getTileBtns() {
+  return Array.from($tileGrid.querySelectorAll('.tile'));
+}
+
+// ═══════════════════════════════════════════════
+//  TILE INTERACTION
+// ═══════════════════════════════════════════════
+
+function onTileClick(idx) {
+  if (gameOver) return;
+  if (selected.has(idx)) {
+    selected.delete(idx);
+  } else if (selected.size < 4) {
+    selected.add(idx);
+  }
+  syncSelectionUI();
+  updateControlButtons();
+  clearMessage();
+}
+
+function syncSelectionUI() {
+  const btns = getTileBtns();
+  btns.forEach((b, i) => b.classList.toggle('selected', selected.has(i)));
+}
+
+function updateControlButtons() {
+  $submitBtn.disabled  = selected.size !== 4 || gameOver;
+  $deselectBtn.disabled = selected.size === 0 || gameOver;
+  $shuffleBtn.disabled = gameOver;
+}
+
+// ═══════════════════════════════════════════════
+//  SUBMIT LOGIC
+// ═══════════════════════════════════════════════
+
+function onSubmit() {
+  if (selected.size !== 4 || gameOver) return;
+
+  const indices = [...selected].sort((a, b) => a - b);
+  const tiles   = indices.map(i => grid[i]);
+  const levels  = tiles.map(t => t.level);
+  const groups  = tiles.map(t => t.group);
+
+  // Log guess for result grid
+  guessLog.push(levels);
+
+  const allSameGroup = groups.every(g => g === groups[0]);
+
+  if (allSameGroup) {
+    handleCorrect(indices, tiles[0]);
+  } else {
+    handleWrong(indices, levels, groups);
+  }
+
+  markPlayed(currentPuzzle.date);
+}
+
+function handleCorrect(indices, firstTile) {
+  const { level, group } = firstTile;
+  const answer = currentPuzzle.answers.find(a => a.group === group);
+
+  animatePop(indices, () => {
+    // Remove found tiles from grid
+    const foundWords = new Set(indices.map(i => grid[i].word));
+    grid = grid.filter(t => !foundWords.has(t.word));
+    selected = new Set();
+
+    found.push({ level, group, members: answer.members });
+    renderGame();
+    clearMessage();
+    updateControlButtons();
+    renderMistakeDots();
+
+    if (found.length === 4) {
+      setTimeout(() => showResult(true), 500);
+    }
+  });
+}
+
+function handleWrong(indices, levels, groups) {
+  // One-away check: 3 of 4 share the same group
+  const oneAway = groups.some(g => groups.filter(x => x === g).length === 3);
+
+  mistakes++;
+  renderMistakeDots();
+
+  animateShake(indices, () => {
+    selected = new Set();
+    syncSelectionUI();
+    updateControlButtons();
+
+    if (oneAway) {
+      showMessage('One away…');
+    }
+
+    if (mistakes >= MAX_MISTAKES) {
+      gameOver = true;
+      clearMessage();
+      revealRemaining();
+    }
+  });
+}
+
+function revealRemaining() {
+  // Reveal unfound categories in level order with stagger
+  const unfound = currentPuzzle.answers
+    .filter(a => !found.find(f => f.group === a.group))
+    .sort((a, b) => a.level - b.level);
+
+  let delay = 0;
+  for (const answer of unfound) {
+    setTimeout(() => {
+      found.push({ level: answer.level, group: answer.group, members: answer.members });
+      grid = grid.filter(t => t.group !== answer.group);
+      renderGame();
+      if (found.length === 4) {
+        setTimeout(() => showResult(false), 500);
+      }
+    }, delay);
+    delay += 450;
+  }
+}
+
+// ═══════════════════════════════════════════════
+//  ANIMATIONS
+// ═══════════════════════════════════════════════
+
+function animatePop(indices, callback) {
+  const btns = getTileBtns();
+  // Sort indices by grid position for stagger
+  const sorted = [...indices].sort((a, b) => a - b);
+  sorted.forEach((gi, rank) => {
+    const btn = btns[gi];
+    if (btn) btn.className = `tile selected pop-${rank}`;
+  });
+  setTimeout(callback, 400 + 80 * 3 + 50);
+}
+
+function animateShake(indices, callback) {
+  const btns = getTileBtns();
+  indices.forEach(i => {
+    const btn = btns[i];
+    if (btn) btn.classList.add('shake');
+  });
+  setTimeout(() => {
+    indices.forEach(i => {
+      const btn = btns[i];
+      if (btn) btn.classList.remove('shake');
+    });
+    callback();
+  }, 520);
+}
+
+// ═══════════════════════════════════════════════
+//  UI HELPERS
+// ═══════════════════════════════════════════════
+
+function showMessage(msg) {
+  $message.innerHTML = msg ? `<span class="msg-pill">${escHtml(msg)}</span>` : '';
+}
+
+function clearMessage() {
+  $message.innerHTML = '';
+}
+
+function renderMistakeDots() {
+  const remaining = MAX_MISTAKES - mistakes;
+  for (let i = 0; i < 4; i++) {
+    document.getElementById(`dot-${i}`).classList.toggle('used', i >= remaining);
+  }
+}
+
+function updateDateDisplay() {
+  if (!currentPuzzle) return;
+  const d = new Date(currentPuzzle.date + 'T12:00:00');
+  $currentDate.textContent = d.toLocaleDateString('en-US', {
+    month: 'short', day: 'numeric', year: 'numeric'
+  });
+}
+
+function updateNavButtons() {
+  $prevDay.disabled = currentIdx >= allPuzzles.length - 1;
+  $nextDay.disabled = currentIdx <= 0;
+}
+
+// ═══════════════════════════════════════════════
+//  RESULT SCREEN
+// ═══════════════════════════════════════════════
+
+function showResult(won) {
+  $gameArea.style.display = 'none';
+  $resultScreen.classList.add('show');
+
+  $resultTitle.textContent = won ? 'Nice work!' : 'Better luck next time!';
+  $resultSub.textContent = won
+    ? `Solved with ${mistakes} mistake${mistakes !== 1 ? 's' : ''}`
+    : 'Here\'s how it broke down:';
+
+  // Show all categories in level order
+  $resultCats.innerHTML = '';
+  const orderedCats = [...found].sort((a, b) => a.level - b.level);
+  for (const cat of orderedCats) {
+    $resultCats.appendChild(makeCategoryBlock(cat, false));
+  }
+
+  // Guess grid: each row = one guess, 4 colored squares
+  $resultGrid.innerHTML = '';
+  for (const row of guessLog) {
+    const rowEl = document.createElement('div');
+    rowEl.className = 'result-row';
+    for (const lv of row) {
+      const sq = document.createElement('div');
+      sq.className = 'result-sq';
+      sq.style.background = COLORS[lv]?.bg || '#ccc';
+      rowEl.appendChild(sq);
+    }
+    $resultGrid.appendChild(rowEl);
+  }
+}
+
+// ═══════════════════════════════════════════════
+//  ARCHIVE MODAL
+// ═══════════════════════════════════════════════
+
+function openModal() {
+  buildDateList();
+  $dateModal.classList.add('show');
+  // Scroll active item into view
+  requestAnimationFrame(() => {
+    const active = $dateScroll.querySelector('.active');
+    if (active) active.scrollIntoView({ block: 'center', behavior: 'instant' });
+  });
+}
+
+function closeModal() {
+  $dateModal.classList.remove('show');
+}
+
+function buildDateList() {
+  $dateScroll.innerHTML = '';
+
+  // Group by month
+  let lastMonth = '';
+
+  for (let i = 0; i < allPuzzles.length; i++) {
+    const p = allPuzzles[i];
+    const d = new Date(p.date + 'T12:00:00');
+    const monthLabel = d.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+
+    if (monthLabel !== lastMonth) {
+      const label = document.createElement('div');
+      label.className = 'date-group-label';
+      label.textContent = monthLabel;
+      $dateScroll.appendChild(label);
+      lastMonth = monthLabel;
+    }
+
+    const item = document.createElement('div');
+    item.className = 'date-item' + (i === currentIdx ? ' active' : '');
+
+    const dateLabel = d.toLocaleDateString('en-US', {
+      weekday: 'short', month: 'short', day: 'numeric'
+    });
+    item.textContent = dateLabel;
+
+    if (playedSet.has(p.date) && i !== currentIdx) {
+      const badge = document.createElement('span');
+      badge.className = 'date-badge';
+      badge.textContent = 'Played';
+      item.appendChild(badge);
+    }
+
+    item.addEventListener('click', () => {
+      closeModal();
+      loadPuzzle(i);
+    });
+
+    $dateScroll.appendChild(item);
+  }
+}
+
+// ═══════════════════════════════════════════════
+//  EVENT LISTENERS
+// ═══════════════════════════════════════════════
+
+$prevDay.addEventListener('click', () => {
+  if (currentIdx < allPuzzles.length - 1) loadPuzzle(currentIdx + 1);
+});
+
+$nextDay.addEventListener('click', () => {
+  if (currentIdx > 0) loadPuzzle(currentIdx - 1);
+});
+
+$archiveBtn.addEventListener('click', openModal);
+$currentDate.addEventListener('click', openModal);
+$browseBtn.addEventListener('click', openModal);
+document.getElementById('close-modal').addEventListener('click', closeModal);
+$dateModal.addEventListener('click', e => { if (e.target === $dateModal) closeModal(); });
+
+$shuffleBtn.addEventListener('click', () => {
+  grid = shuffle([...grid]);
+  selected = new Set();
+  renderGame();
+  updateControlButtons();
+});
+
+$deselectBtn.addEventListener('click', () => {
+  selected = new Set();
+  syncSelectionUI();
+  updateControlButtons();
+  clearMessage();
+});
+
+$submitBtn.addEventListener('click', onSubmit);
+
+// Keyboard shortcuts
+document.addEventListener('keydown', e => {
+  if (e.key === 'Enter' && !$submitBtn.disabled) onSubmit();
+  if (e.key === 'Escape') {
+    if ($dateModal.classList.contains('show')) closeModal();
+    else if (selected.size > 0) {
+      selected = new Set();
+      syncSelectionUI();
+      updateControlButtons();
+      clearMessage();
+    }
+  }
+});
+
+// ═══════════════════════════════════════════════
+//  START
+// ═══════════════════════════════════════════════
+init();
+</script>
+</body>
+</html>
