@@ -775,9 +775,12 @@ async function init() {
     if (!res.ok) throw new Error('HTTP ' + res.status);
     const raw = await res.json();
 
+    const today = new Date();
+    const todayStr = `${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,'0')}-${String(today.getDate()).padStart(2,'0')}`;
+
     const cutoff = new Date();
     cutoff.setDate(cutoff.getDate() - 365);
-    const cutoffStr = cutoff.toISOString().slice(0, 10);
+    const cutoffStr = `${cutoff.getFullYear()}-${String(cutoff.getMonth()+1).padStart(2,'0')}-${String(cutoff.getDate()).padStart(2,'0')}`;
 
     allPuzzles = raw
       .filter(p => p.date >= cutoffStr)
@@ -789,7 +792,8 @@ async function init() {
       .sort((a, b) => (a.date < b.date ? 1 : -1));
 
     $loading.style.display = 'none';
-    loadPuzzle(0);
+    const todayIdx = allPuzzles.findIndex(p => p.date === todayStr);
+    loadPuzzle(todayIdx !== -1 ? todayIdx : 0);
   } catch (err) {
     $loading.innerHTML = `<p style="color:#c00;font-weight:600">
       Failed to load puzzles.<br><small>${err.message}</small><br><br>
