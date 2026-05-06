@@ -664,7 +664,7 @@
 //  CONSTANTS
 // ═══════════════════════════════════════════════
 
-const DATA_URL   = 'https://raw.githubusercontent.com/Eyefyre/NYT-Connections-Answers/main/connections.json';
+const DATA_URL   = 'https://raw.githubusercontent.com/Eyefyre/NYT-Connections-Answers/main/connections.json?t=' + new Date().toISOString().slice(0, 10);
 const STATS_KEY  = 'nyt-connections-stats';
 const MAX_MISTAKES = 4;
 
