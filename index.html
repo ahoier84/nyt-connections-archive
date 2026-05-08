@@ -793,7 +793,9 @@ async function init() {
 
     $loading.style.display = 'none';
     const todayIdx = allPuzzles.findIndex(p => p.date === todayStr);
-    loadPuzzle(todayIdx !== -1 ? todayIdx : 0);
+    // Fall back to the most recent puzzle that isn't in the future (allPuzzles is newest→oldest)
+    const fallbackIdx = allPuzzles.findIndex(p => p.date <= todayStr);
+    loadPuzzle(todayIdx !== -1 ? todayIdx : (fallbackIdx !== -1 ? fallbackIdx : 0));
   } catch (err) {
     $loading.innerHTML = `<p style="color:#c00;font-weight:600">
       Failed to load puzzles.<br><small>${err.message}</small><br><br>
